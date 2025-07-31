@@ -1,0 +1,15 @@
+{
+  "name": "lobby-lockdown",
+  "version": "1.0.0",
+  "description": "A community-driven moderation tool for Lockdown Protocol to update local banlists.",
+  "main": "src/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "readline-sync": "^1.4.10",
+    "sync-request": "^6.1.0"
+  }
+}
