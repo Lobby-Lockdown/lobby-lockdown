@@ -32,8 +32,8 @@ jobs:
       - name: Download rcedit
         run: Invoke-WebRequest -Uri "https://github.com/electron/rcedit/releases/latest/download/rcedit-x64.exe" -OutFile rcedit.exe
 
-      - name: Apply icon
-        run: ./rcedit.exe dist/lobby-lockdown.exe --set-icon assets/lobby-lockdown.ico
+      # - name: Apply icon
+      #   run: ./rcedit.exe dist/lobby-lockdown.exe --set-icon assets/lobby-lockdown.ico
 
       - name: Get short commit SHA
         id: vars
