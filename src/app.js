@@ -1,3 +1,7 @@
+console.log('__dirname:', __dirname);
+console.log('process.cwd():', process.cwd());
+console.log('Running inside pkg?', !!process.pkg);
+
 const GVAS = require('./gvas.js');
 const prompt = require('prompt-sync')();
 const axios = require('axios');
