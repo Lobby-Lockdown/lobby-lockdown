@@ -27,7 +27,7 @@ jobs:
         run: npm install -g pkg
 
       - name: Build executable
-        run: pkg ./src/app.js --targets node18-win-x64 --output dist/lobby-lockdown.exe --debug
+        run: pkg ./src/app.js --targets node18-win-x64 --output dist/lobby-lockdown.exe
 
       - name: Download rcedit
         run: Invoke-WebRequest -Uri "https://github.com/electron/rcedit/releases/latest/download/rcedit-x64.exe" -OutFile rcedit.exe
