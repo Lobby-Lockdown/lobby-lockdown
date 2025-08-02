@@ -7,7 +7,7 @@ const discord = `https://discord.gg/Kc9KRBJPMA`;
 const github = `https://github.com/Lobby-Lockdown`;
 
 var banList = undefined;
-var banListFilePath = path.join(process.env.LOCALAPPDATA, 'LockdownProtocol', 'Saved', 'SaveGames', 'Save_BanList.sav');
+var banListFilePath = path.join(process.env.LOCALAPPDATA, 'LockdownProtocol/Saved/SaveGames/Save_BanList.sav');
 var retries = 3;
 
 console.log( 
