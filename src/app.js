@@ -35,7 +35,6 @@ https://raw.githubusercontent.com/Lobby-Lockdown/lobby-lockdown/refs/heads/main/
 Please press enter to continue.`);
 prompt(``);
 
-// Try 
 while(!banList && retries-- > 0) {
     try {
         banList = new GVAS(banListFilePath);
