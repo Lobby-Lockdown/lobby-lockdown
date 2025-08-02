@@ -129,7 +129,7 @@ function removePlayerFromBanList() {
 }
 
 async function applyGlobalBanList() {
-    // Get latest version of bans from main branch'
+    // Get latest version of bans from main branch
     const res = await axios.get('https://raw.githubusercontent.com/Lobby-Lockdown/lobby-lockdown/refs/heads/main/bans.txt');
     const steamIds = res.data.split('\n').filter(line => line.trim() !== '').map(line => Buffer.from(line.trim(), 'base64').toString('utf8'));
 

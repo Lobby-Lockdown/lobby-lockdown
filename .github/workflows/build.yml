@@ -1,16 +1,15 @@
-name: Build Lobby Lockdown EXE
+name: Build & Release Lobby Lockdown EXE
 
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:
 
 jobs:
-  build-windows:
+  build-and-release:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Set up Node.js
@@ -21,23 +20,28 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Install pkg globally
+      - name: Install pkg
         run: npm install -g pkg
 
-      - name: Build exe with pkg
-        run: |
-          pkg . --targets node18-win-x64 --output dist/lobby-lockdown.exe
+      - name: Build executable
+        run: pkg . --targets node18-win-x64 --output dist/lobby-lockdown.exe
 
       - name: Download rcedit
-        run: |
-          Invoke-WebRequest -Uri "https://github.com/electron/rcedit/releases/latest/download/rcedit-x64.exe" -OutFile rcedit.exe
+        run: Invoke-WebRequest -Uri "https://github.com/electron/rcedit/releases/latest/download/rcedit-x64.exe" -OutFile rcedit.exe
 
-      - name: Apply icon to exe
-        run: |
-          ./rcedit.exe dist/lobby-lockdown.exe --set-icon ./assets/lobby-lockdown.ico
+      - name: Apply icon
+        run: ./rcedit.exe dist/lobby-lockdown.exe --set-icon assets/lobby-lockdown.ico
 
-      - name: Upload EXE artifact
-        uses: actions/upload-artifact@v4
+      - name: Get short commit SHA
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $env:GITHUB_ENV
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
         with:
-          name: lobby-lockdown-exe
-          path: dist/lobby-lockdown.exe
+          tag_name: main-${{ env.sha_short }}
+          name: "Auto Release from main - ${{ env.sha_short }}"
+          files: dist/lobby-lockdown.exe
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
