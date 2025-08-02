@@ -36,6 +36,12 @@ jobs:
         id: vars
         run: echo "sha_short=$(git rev-parse --short HEAD)" >> $env:GITHUB_ENV
 
+      - name: Create tag
+        run: git config user.name "github-actions" &&
+            git config user.email "github-actions@github.com" &&
+            git tag main-${{ env.sha_short }} &&
+            git push origin main-${{ env.sha_short }}
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
