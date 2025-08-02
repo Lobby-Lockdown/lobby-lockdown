@@ -36,7 +36,7 @@ jobs:
         id: vars
         run: echo "sha_short=$(git rev-parse --short HEAD)" >> $env:GITHUB_ENV
 
-      - name: Create tag
+      - name: Create tag and push it using PAT
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
