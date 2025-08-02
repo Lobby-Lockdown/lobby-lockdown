@@ -3,10 +3,6 @@
   "version": "1.0.0",
   "description": "A community-driven moderation tool for Lockdown Protocol to update local banlists.",
   "main": "src/app.js",
-  "bin": "src/app.js",
-  "pkg": {
-    "assets": ["src/gvas.js"]
-  },
   "scripts": {
     "start": "node ./src/app.js"
   },
