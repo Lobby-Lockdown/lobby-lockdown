@@ -18,8 +18,16 @@ Join the **Lobby Lockdown Discord** and connect with fellow players and develope
 - Add/remove players from your local ban list
 - Import a community-sourced list of banned players to keep your lobbies safe
 
+## ⬇️ Download
+You can download the latest version of **Lobby Lockdown** here:
+
+[![Download Lobby Lockdown](https://img.shields.io/badge/Download-EXE-blue?style=for-the-badge&logo=windows)](https://github.com/Lobby-Lockdown/lobby-lockdown/releases/latest/download/lobby-lockdown.exe)
+
+> ✅ Compatible with Windows  
+> 📦 No installation required – just run the `.exe`
+
 ## Requirements
-To run the project, you'll need:
+To run the project (if not using the provided .exe in the Releases section), you'll need:
 - [Node.js](https://nodejs.org/) (v16 or higher recommended)
 - [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
 
