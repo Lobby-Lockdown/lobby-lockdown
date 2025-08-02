@@ -50,7 +50,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: main-${{ env.sha_short }}
-          name: "Auto Release from main - ${{ env.sha_short }}"
+          name: "Release ${{ env.sha_short }}"
           files: dist/lobby-lockdown.exe
           generate_release_notes: true
         env:
