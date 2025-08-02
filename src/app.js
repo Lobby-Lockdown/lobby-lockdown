@@ -1,5 +1,5 @@
 const GVAS = require('./gvas.js');
-const readlineSync = require('readline-sync');
+const prompt = require('prompt-sync')();
 const axios = require('axios');
 const path = require('path');
 
@@ -33,7 +33,7 @@ By continuing, you confirm that you have read and agree to our disclaimer:
 https://raw.githubusercontent.com/Lobby-Lockdown/lobby-lockdown/refs/heads/main/DISCLAIMER
 
 Please press enter to continue.`);
-readlineSync.question(``);
+prompt(``);
 
 // Try 
 while(!banList && retries-- > 0) {
@@ -43,7 +43,7 @@ while(!banList && retries-- > 0) {
         switch(error.code) {
             case GVAS.Error.FileNotFound:
                 console.log(`\\nThe Lockdown Protocol ban list was not found. Please specify the full path to your Save_BanList.sav file.`);
-                banListFilePath = readlineSync.question(`Enter file path: `);
+                banListFilePath = prompt(`Enter file path: `);
                 break;
 
             case GVAS.Error.FileNotAccessible:
@@ -76,7 +76,7 @@ if(retries <= 0) {
             4) Add all Steam64 IDs from the community-driven ban list to yours
             5) Exit
         `.replace(/^[ \t]+/gm, ''));
-        choice = readlineSync.question(`Enter a number: `);
+        choice = prompt(`Enter a number: `);
 
         switch(choice) {
             case "1":
@@ -110,7 +110,7 @@ function viewBanList() {
 }
 
 function addPlayerToBanList() {
-    const player = readlineSync.question(`\n\nEnter Steam64 ID: `);
+    const player = prompt(`\n\nEnter Steam64 ID: `);
     if(/^7656\d{13}$/.test(player)) {
         const numAdded = banList.addPlayersToBanList([ player ]);
         console.log(`Successfully added ${numAdded} players to your ban list!`);
@@ -120,7 +120,7 @@ function addPlayerToBanList() {
 }
 
 function removePlayerFromBanList() {
-    const player = readlineSync.question(`\n\nEnter Steam64 ID: `);
+    const player = prompt(`\n\nEnter Steam64 ID: `);
     if(/^7656\d{13}$/.test(player)) {
         const numRemoved = banList.removePlayerFromBanList(player);
         console.log(`Successfully removed ${numRemoved} players from your ban list!`);
