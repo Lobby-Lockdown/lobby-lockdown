@@ -1,6 +1,6 @@
 const GVAS = require('./gvas.js');
 const readlineSync = require('readline-sync');
-const request = require('sync-request');
+const axios = require('axios');
 
 const discord = `https://discord.gg/Kc9KRBJPMA`;
 const github = `https://github.com/Lobby-Lockdown`;
@@ -65,37 +65,40 @@ if(retries <= 0) {
     process.exit(1);
 }
 
-var choice = "0";
-while (choice != "5") {
-    console.log(`\n\n--------------------------[ Main Menu ]--------------------------`);
-    console.log(`1) View current list of Steam64 IDs on your ban list
-2) Add a user to your ban list by Steam64 ID
-3) Remove a user from your ban list by Steam64 ID
-4) Add all Steam64 IDs from the community-driven ban list to yours
-5) Exit`);
-    choice = readlineSync.question(`Enter a number: `);
+(async () => {
+    var choice = "0";
+    while (choice != "5") {
+        console.log(`\n\n--------------------------[ Main Menu ]--------------------------
+            1) View current list of Steam64 IDs on your ban list
+            2) Add a user to your ban list by Steam64 ID
+            3) Remove a user from your ban list by Steam64 ID
+            4) Add all Steam64 IDs from the community-driven ban list to yours
+            5) Exit
+        `.replace(/^[ \t]+/gm, ''));
+        choice = readlineSync.question(`Enter a number: `);
 
-    switch(choice) {
-        case "1":
-            viewBanList();
-            break;
-        
-        case "2":
-            addPlayerToBanList();
-            break;
+        switch(choice) {
+            case "1":
+                viewBanList();
+                break;
+            
+            case "2":
+                addPlayerToBanList();
+                break;
 
-        case "3":
-            removePlayerFromBanList();
-            break;
-        
-        case "4":
-            applyGlobalBanList();
-            break;
+            case "3":
+                removePlayerFromBanList();
+                break;
+            
+            case "4":
+                await applyGlobalBanList();
+                break;
 
-        default:
-            break;
+            default:
+                break;
+        }
     }
-}
+})();
 
 function viewBanList() {
     console.log('\n\nBanned players:')
@@ -125,11 +128,10 @@ function removePlayerFromBanList() {
     }
 }
 
-function applyGlobalBanList() {
-    // Get latest version of bans from main branch
-    const res = request('GET', 'https://raw.githubusercontent.com/Lobby-Lockdown/lobby-lockdown/refs/heads/main/bans.txt');
-    const body = res.getBody('utf8');
-    const steamIds = body.split('\n').filter(line => line.trim() !== '').map(line => Buffer.from(line.trim(), 'base64').toString('utf8'));
+async function applyGlobalBanList() {
+    // Get latest version of bans from main branch'
+    const res = await axios.get('https://raw.githubusercontent.com/Lobby-Lockdown/lobby-lockdown/refs/heads/main/bans.txt');
+    const steamIds = res.data.split('\n').filter(line => line.trim() !== '').map(line => Buffer.from(line.trim(), 'base64').toString('utf8'));
 
     var numAdded = 0;
     try {

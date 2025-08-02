@@ -1,0 +1,43 @@
+name: Build Lobby Lockdown EXE
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install pkg globally
+        run: npm install -g pkg
+
+      - name: Build exe with pkg
+        run: |
+          pkg . --targets node18-win-x64 --output dist/lobby-lockdown.exe
+
+      - name: Download rcedit
+        run: |
+          Invoke-WebRequest -Uri "https://github.com/electron/rcedit/releases/latest/download/rcedit-x64.exe" -OutFile rcedit.exe
+
+      - name: Apply icon to exe
+        run: |
+          ./rcedit.exe dist/lobby-lockdown.exe --set-icon ./assets/lobby-lockdown.ico
+
+      - name: Upload EXE artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: lobby-lockdown-exe
+          path: dist/lobby-lockdown.exe
