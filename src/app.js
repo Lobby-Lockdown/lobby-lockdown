@@ -32,42 +32,46 @@ Discord:    ${discord}
 By continuing, you confirm that you have read and agree to our disclaimer:
 https://raw.githubusercontent.com/Lobby-Lockdown/lobby-lockdown/refs/heads/main/DISCLAIMER
 
-Please press enter to continue.`);
+Please press ENTER to continue.`);
 prompt(``);
 
-while(!banList && retries-- > 0) {
+var fatalError = false;
+
+while(!banList && retries-- > 0 && !fatalError) {
     try {
         banList = new GVAS(banListFilePath);
     } catch(error) {
         switch(error.code) {
             case GVAS.Error.FileNotFound:
-                console.log(`\\nThe Lockdown Protocol ban list was not found. Please specify the full path to your Save_BanList.sav file.`);
+                console.log(`\nThe Lockdown Protocol ban list was not found. Please specify the full path to your Save_BanList.sav file.`);
                 banListFilePath = prompt(`Enter file path: `);
                 break;
 
             case GVAS.Error.FileNotAccessible:
-                console.log(`\\nYour Lockdown Protocol ban list was found, but can't be opened for reading/writing. Please close your game if running and try again.`);
+                console.log(`\nYour Lockdown Protocol ban list was found, but can't be opened for reading/writing. Please close your game if running and try again.`);
                 console.log(`If you keep encountering this error, please reach out for support on the Discord: ${discord}`);
-                process.exit(1);
+                fatalError = true;
+                break;
 
             case GVAS.Error.InvalidFileFormat:
                 console.log(`Could not successfully parse your ban list file. Please reach out for support on the Discord: ${discord}`);
-                process.exit(1);
+                fatalError = true;
+                break;
 
             default:
-                console.log(`\\nAn unknown error has occurred. Please reach out for support on the Discord: ${discord}`);
+                console.log(`\nAn unknown error has occurred. Please reach out for support on the Discord: ${discord}`);
         }
     }
 }
 
 if(retries <= 0) {
-    console.log(`\\n\\nMax amount of retries exceeded. Please join our Discord for support: ${discord}`);
+    console.log(`\n\nMax amount of retries exceeded. Please join our Discord for support: ${discord}`);
     process.exit(1);
 }
 
 (async () => {
     var choice = "0";
-    while (choice != "5") {
+    while (!fatalError) {
         console.log(`\n\n--------------------------[ Main Menu ]--------------------------
             1) View current list of Steam64 IDs on your ban list
             2) Add a user to your ban list by Steam64 ID
@@ -94,10 +98,15 @@ if(retries <= 0) {
                 await applyGlobalBanList();
                 break;
 
+            case "5":
+                process.exit(0);
+
             default:
                 break;
         }
     }
+
+    prompt(`\nPress ENTER to quit.`);
 })();
 
 function viewBanList() {
@@ -140,7 +149,7 @@ async function applyGlobalBanList() {
         switch(error.code) {
             case GVAS.Error.InvalidFileFormat:
                 console.log(`The specified ban list is in an invalid format. Please reach out for support on the Discord: ${discord}`)
-                process.exit(1);
+                fatalError = true;
 
             default:
                 console.log(`\nAn unknown error has occurred. Please reach out for support on the Discord: ${discord}`);

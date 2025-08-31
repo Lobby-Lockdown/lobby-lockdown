@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 
 class GVAS {
 
@@ -32,12 +33,14 @@ class GVAS {
         
         try {
             // Check to see that the file can be opened as r/w
-            fs.openSync(filePath, 'r+');
+            //const fs = fs.openSync(filePath, 'r+');
+            //fs.closeSync(fd);
         } catch(error) {
             throw { code: GVAS.Error.FileNotAccessible, message: `File cannot be read/written: ${filePath}` };
         }
 
-        // Create a backup 
+        // Create a backup of the current ban list
+       fs.copyFileSync(filePath, path.join(path.dirname(filePath), `${path.basename(filePath, ".sav")}_${new Date().toISOString().replace(/[-:T]/g,"").split(".")[0]}.sav.backup`));
 
         this.#banListFile = filePath;
 
