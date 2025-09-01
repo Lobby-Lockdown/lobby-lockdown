@@ -50,7 +50,7 @@ jobs:
         shell: pwsh
         run: |
           $tag = "main-$env:sha_short"
-          Rename-Item -Path "dist/lobby-lockdown.exe" -NewName "lobby-lockdown-$tag.exe"
+          Rename-Item -Path "dist/lobby-lockdown.exe" -NewName "lobby-lockdown-v_$tag.exe"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
