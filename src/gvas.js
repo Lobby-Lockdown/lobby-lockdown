@@ -40,7 +40,7 @@ class GVAS {
         }
 
         // Create a backup of the current ban list
-       fs.copyFileSync(filePath, path.join(path.dirname(filePath), `${path.basename(filePath, ".sav")}-${new Date().toISOString().replace(/[-:T]/g,"").split(".")[0]}.sav.backup`));
+        fs.copyFileSync(filePath, path.join(path.dirname(filePath), `${path.basename(filePath, ".sav")}-${new Date().toISOString().replace(/[-:T]/g,"").split(".")[0]}.sav.backup`));
 
         this.#banListFile = filePath;
 
