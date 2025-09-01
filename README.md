@@ -21,7 +21,7 @@ Join the **Lobby Lockdown Discord** and connect with fellow players and develope
 ## ⬇️ Download
 You can download the latest version of **Lobby Lockdown** here:
 
-[![Download Lobby Lockdown](https://img.shields.io/badge/Download-EXE-blue?style=for-the-badge&logo=windows)](https://github.com/Lobby-Lockdown/lobby-lockdown/releases/latest/download/lobby-lockdown.exe)
+[![Download Lobby Lockdown](https://img.shields.io/badge/Download-EXE-blue?style=for-the-badge&logo=windows)](https://github.com/Lobby-Lockdown/lobby-lockdown/releases/latest/)
 
 > ✅ Compatible with Windows  
 > 📦 No installation required – just run the `.exe`
