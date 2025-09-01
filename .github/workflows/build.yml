@@ -49,7 +49,7 @@ jobs:
       - name: Rename artifact to include tag
         shell: pwsh
         run: |
-          $tag = "main-$env:sha_short"
+          $tag = "$env:sha_short"
           Rename-Item -Path "dist/lobby-lockdown.exe" -NewName "lobby-lockdown-v_$tag.exe"
 
       - name: Create GitHub Release
