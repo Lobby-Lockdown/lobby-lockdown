@@ -1,0 +1,10 @@
+# Build outputs
+/dist
+/release
+node_modules
+# Package managers
+package-lock.json
+# Generated assets
+*.log
+*.map
+*.d.ts
