@@ -57,7 +57,7 @@ jobs:
         with:
           tag_name: main-${{ env.sha_short }}
           name: "Release ${{ env.sha_short }}"
-          files: dist/lobby-lockdown-main-${{ env.sha_short }}.exe
+          files: dist/lobby-lockdown-v_${{ env.sha_short }}.exe
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
