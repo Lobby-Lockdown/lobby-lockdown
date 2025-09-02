@@ -48,7 +48,7 @@ jobs:
         env:
           DEBUG: electron-builder
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
-        run: npm run build:win
+        run: npm run build:win -- --publish=never
 
       - name: Upload artifacts (EXE)
         uses: actions/upload-artifact@v4
