@@ -197,6 +197,13 @@ function createWindow(): void {
     icon: path.join(__dirname, '../assets/lobby-lockdown.ico'),
   });
 
+  // Hide the native menu bar
+  try {
+    mainWindow.setMenuBarVisibility(false);
+  } catch {
+    /* ignore */
+  }
+
   // Load renderer: always use Vite dev server in development to avoid stale bundles
   const isDevEnv = process.env.NODE_ENV === 'development';
   const devUrl = process.env.VITE_DEV_SERVER_URL || 'http://localhost:5173';

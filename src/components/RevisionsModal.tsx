@@ -101,7 +101,9 @@ const RevisionsModal: React.FC<RevisionsModalProps> = ({ isOpen, onClose }) => {
                         try {
                           const count = await window.electronAPI.getCurrentBanCount();
                           setBanCount(count);
-                        } catch {}
+                        } catch (e) {
+                          console.debug('getCurrentBanCount failed', e);
+                        }
                       } catch {
                         toast('Failed to revert to revision', { kind: 'error' });
                       }

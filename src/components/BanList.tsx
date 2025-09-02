@@ -9,7 +9,7 @@ interface Ban {
 }
 
 const BanList: React.FC<{ steamApiKey: string; onOpenHistory?: () => void }> = ({
-  steamApiKey,
+  steamApiKey: _steamApiKey,
   onOpenHistory,
 }) => {
   const [bans, setBans] = useState<Ban[]>([]);

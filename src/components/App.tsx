@@ -136,7 +136,10 @@ const App: React.FC = () => {
       try {
         const v = await window.electronAPI.getAppVersion();
         setVersion(v || '');
-      } catch {}
+      } catch (e) {
+        // Non-critical; show nothing if version cannot be read
+        console.debug('getAppVersion failed', e);
+      }
     })();
   }, []);
 

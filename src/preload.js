@@ -1,5 +1,6 @@
 /* eslint-env node */
 // Preload runs in Electron's isolated world; keep CommonJS require
+// eslint-disable-next-line no-undef
 const { contextBridge, ipcRenderer } = require('electron');
 
 // Define the API interface
