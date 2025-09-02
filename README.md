@@ -1,47 +1,133 @@
 # 🎮 Lobby Lockdown
 
-**Lobby Lockdown** is a community-driven ban list tool designed for the game **Lockdown Protocol** on Steam. It helps players host cleaner, more enjoyable lobbies by allowing them to maintain and share banned players and edit their ban lists outside of the game, since the game doesn't allow that currently. The project includes utilities for managing ban lists, as well as syncing lists from external sources.
+[![build-windows](https://github.com/Lobby-Lockdown/lobby-lockdown/actions/workflows/build-windows.yml/badge.svg)](https://github.com/Lobby-Lockdown/lobby-lockdown/actions/workflows/build-windows.yml)
+[![Electron](https://img.shields.io/badge/Electron-47848F?logo=electron&logoColor=white)](#)
+[![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)](#)
+[![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)](#)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](#)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-38B2AC?logo=tailwindcss&logoColor=white)](#)
+[![Windows](https://img.shields.io/badge/Windows-0078D6?logo=windows&logoColor=white)](#)
 
-> ⚠️ **Disclaimer:** Lobby Lockdown is not affiliated with *Lockdown Protocol*, Mirage Creative Lab, or any associated entity. All data is user-submitted and for informational purposes only. No guarantees are made regarding accuracy. If you believe you were added to the list in error, please submit a request on Discord for review. Please view our full disclaimer [here](https://raw.githubusercontent.com/Lobby-Lockdown/lobby-lockdown/refs/heads/main/DISCLAIMER).
+Desktop app to manage your Lockdown Protocol ban list. View, add, remove, and sync bans from the community list, with optional player-name lookups via the Steam Web API. Runs in the tray and can auto‑update hourly.
+
+Built with Electron + Vite + Tailwind + TypeScript.
+
+> ⚠️ Disclaimer: Not affiliated with Lockdown Protocol or Mirage Creative Lab. Data is user‑submitted and provided as‑is. See the full [DISCLAIMER](./DISCLAIMER).
 
 ---
 
-## 💬 Join the Community
-
-Have questions, feedback, or want to contribute?  
-Join the **Lobby Lockdown Discord** and connect with fellow players and developers:
+## 💬 Community
 
 [![Join our Discord](https://img.shields.io/discord/1399508907512168730?color=7289DA&label=Discord&logo=discord&style=for-the-badge)](https://discord.gg/Kc9KRBJPMA)
 
 ## 🚀 Features
-- View the full list of banned players on your local ban list
-- Add/remove players from your local ban list
-- Import a community-sourced list of banned players to keep your lobbies safe
+
+- View current ban list instantly
+- Add/Remove players with validation + de‑duplication
+- Update from community list with automatic backups
+- Revert to previous state (revisions history)
+- Optional player‑name lookups (Steam Web API)
+- System tray: Open, Update Now, Auto Update, Quit
 
 ## ⬇️ Download
-You can download the latest version of **Lobby Lockdown** here:
 
-[![Download Lobby Lockdown](https://img.shields.io/badge/Download-EXE-blue?style=for-the-badge&logo=windows)](https://github.com/Lobby-Lockdown/lobby-lockdown/releases/latest/)
+[Download the latest EXE](https://github.com/Lobby-Lockdown/lobby-lockdown/releases/latest/) (Windows).
 
-> ✅ Compatible with Windows  
-> 📦 No installation required – just run the `.exe`
+## 📁 Project layout
 
-## Requirements
-To run the project (if not using the provided .exe in the Releases section), you'll need:
-- [Node.js](https://nodejs.org/) (v16 or higher recommended)
-- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
+```
+.
+├─ assets/                 # Icon and static assets
+├─ dist/                   # Build output (main, preload, renderer)
+├─ src/
+│  ├─ renderer/            # Vite + Tailwind UI
+│  ├─ components/          # React components
+│  ├─ types/               # Preload API typings
+│  ├─ ban_lib.ts           # Ban operations (list/add/remove/update/revert)
+│  ├─ gvas.ts              # Save_BanList.sav parser/writer
+│  ├─ main.ts              # Electron main (IPC, tray, scheduler, caches)
+│  └─ preload.js           # Safe API surface (contextBridge)
+├─ package.json            # Scripts + electron‑builder config
+├─ vite.config.ts          # Vite config (renderer)
+├─ tailwind.config.js      # Tailwind config
+├─ postcss.config.cjs      # PostCSS config
+└─ tsconfig.json
+```
 
-## 📦 Installation
-1. Clone the repository:
+## 🛠 Requirements
+
+- Node.js 18+
+- npm
+
+## 🧭 Getting started
+
 ```bash
 git clone https://github.com/Lobby-Lockdown/lobby-lockdown.git
 cd lobby-lockdown
-```
-2. Install NPM dependencies
-```bash
 npm install
+
+# Dev (Vite + Electron, strict port 5173)
+npm run dev
+
+# Build production (tsc + vite)
+npm run build
+
+# Run the built app
+npm run electron
 ```
-3. Run Lobby Lockdown
-```bash
-npm run start
+
+## 🧩 NPM scripts
+
+- dev – start Vite, watch main, and launch Electron
+- build – compile main (tsc) and renderer (vite)
+- electron – build then run Electron against the built files
+- build:win – build and package Windows artifacts (portable + NSIS)
+- lint, lint:fix – ESLint checks
+- format, format:check – Prettier formatting
+- cli – run the maintenance CLI (`src/ban_cli.ts`)
+
+Run: `npm run <script>`
+
+## 🔌 CLI (optional)
+
+Minimal wrapper for scripting/automation:
+
 ```
+npm run cli -- list|add <id>|remove <id>|update|revert
+```
+
+Steam64 IDs must be 17 digits starting with `7656`.
+
+## ⚙️ Settings & storage
+
+- Steam API Key – stored with Electron `safeStorage` (encrypted). Set it in Settings.
+- Name cache – persisted by the main process in the app data folder (`names-cache.json`).
+- App config – persisted in the app data folder (`app-config.json`).
+- Revisions – snapshots of your ban list are saved under the app data folder.
+
+Note: the app data folder is Electron’s `app.getPath('userData')` on your system.
+
+## 📦 Packaging (Windows)
+
+Build portable + installer with electron‑builder:
+
+```
+npm run build:win
+```
+
+Artifacts are written to `release/` per the config in `package.json`.
+
+## 🌐 Environment variables (optional)
+
+- `LOCKDOWN_SAVE_PATH` – full path to `Save_BanList.sav` (otherwise we try the default under `%LOCALAPPDATA%`).
+- `STEAM_API_KEY` – enables player‑name lookups; can also be set from Settings.
+
+## 🔧 Troubleshooting
+
+- Dev window blank: ensure port 5173 is free; `npm run dev` starts the Vite server and Electron waits for it.
+- Save file issues: make sure the game isn’t writing the save; set a custom path in Settings if needed.
+- Name lookups: set a valid Steam Web API key in Settings.
+
+## 🤝 Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) and [SECURITY.md](./SECURITY.md).

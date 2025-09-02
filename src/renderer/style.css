@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-md bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors;
+  }
+  .btn-primary {
+    @apply bg-indigo-600 text-white hover:bg-indigo-700;
+  }
+  .btn-blue {
+    @apply bg-indigo-600 text-white hover:bg-indigo-700;
+  }
+  .btn-purple {
+    @apply bg-indigo-600 text-white hover:bg-indigo-700;
+  }
+  .btn-orange {
+    @apply bg-indigo-600 text-white hover:bg-indigo-700;
+  }
+  .btn-green {
+    @apply bg-indigo-600 text-white hover:bg-indigo-700;
+  }
+  .btn-indigo {
+    @apply bg-indigo-600 text-white hover:bg-indigo-700;
+  }
+  .btn-red {
+    @apply bg-red-500 text-white hover:bg-red-600;
+  }
+  .icon-btn {
+    @apply p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors;
+  }
+  .toggle {
+    @apply relative inline-flex h-6 w-11 items-center rounded-full transition-colors bg-gray-300;
+  }
+  .toggle-knob {
+    @apply inline-block h-4 w-4 transform rounded-full bg-white translate-x-1 transition-transform;
+  }
+  .input {
+    @apply w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white;
+  }
+  .link {
+    @apply text-indigo-600 dark:text-indigo-400 hover:underline;
+  }
+}

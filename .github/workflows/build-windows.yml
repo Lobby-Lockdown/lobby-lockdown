@@ -1,0 +1,104 @@
+name: build-electron-windows
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    if: github.event_name != 'release'
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Cache Electron/electron-builder
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~\AppData\Local\electron\Cache
+            ~\AppData\Local\electron-builder\Cache
+          key: ${{ runner.os }}-electron-cache-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-electron-cache-
+
+      - name: Install dependencies (ci)
+        if: hashFiles('package-lock.json') != ''
+        run: npm ci
+
+      - name: Install dependencies (install)
+        if: hashFiles('package-lock.json') == ''
+        run: npm install --no-audit --no-fund
+
+      - name: Build Windows artifacts
+        env:
+          DEBUG: electron-builder
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: npm run build:win
+      - name: Upload artifacts (EXE)
+        uses: actions/upload-artifact@v4
+        with:
+          name: lobby-lockdown-windows
+          path: |
+            release/*.exe
+          if-no-files-found: error
+
+  publish-release:
+    if: github.event_name == 'release'
+    needs: []
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Cache Electron/electron-builder
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~\AppData\Local\electron\Cache
+            ~\AppData\Local\electron-builder\Cache
+          key: ${{ runner.os }}-electron-cache-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-electron-cache-
+
+      - name: Install dependencies (ci)
+        if: hashFiles('package-lock.json') != ''
+        run: npm ci
+
+      - name: Install dependencies (install)
+        if: hashFiles('package-lock.json') == ''
+        run: npm install --no-audit --no-fund
+
+      - name: Build Windows artifacts
+        env:
+          DEBUG: electron-builder
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: npm run build:win
+
+      - name: Upload assets to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            release/*.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

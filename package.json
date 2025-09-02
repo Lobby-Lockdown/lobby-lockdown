@@ -2,14 +2,120 @@
   "name": "lobby-lockdown",
   "version": "1.0.0",
   "description": "A community-driven moderation tool for Lockdown Protocol to update local banlists.",
-  "main": "src/app.js",
+  "type": "module",
+  "main": "dist/main.js",
+  "homepage": "./",
+  "build": {
+    "appId": "com.lobbylockdown.app",
+    "productName": "Lobby Lockdown",
+    "files": [
+      "dist/main.js",
+      "dist/ban_lib.js",
+      "dist/gvas.js",
+      "dist/preload.js",
+      "dist/renderer/**",
+      "assets/**/lobby-lockdown.ico",
+      "LICENSE",
+      "DISCLAIMER",
+      "!dist/**/*.map",
+      "!dist/**/*.d.ts",
+      "!dist/**/*.jsx",
+      "!dist/components/**"
+    ],
+    "directories": {
+      "buildResources": "assets",
+      "output": "release"
+    },
+    "extraResources": [
+      {
+        "from": "assets/lobby-lockdown.ico",
+        "to": "assets/lobby-lockdown.ico"
+      }
+    ],
+    "compression": "maximum",
+    "electronLanguages": [
+      "en-US"
+    ],
+    "publish": [],
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/lobby-lockdown.ico",
+      "signAndEditExecutable": false,
+      "signExts": []
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-portable.exe"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "${productName} Setup ${version}.exe"
+    }
+  },
   "scripts": {
-    "start": "node ./src/app.js"
+    "cli": "tsx ./src/ban_cli.ts",
+    "build:main": "tsc",
+    "build:renderer": "vite build",
+    "build": "npm run build:main && npm run build:renderer",
+    "clean:release": "node -e \"try{require('fs').rmSync('release',{recursive:true,force:true})}catch(e){}\"",
+    "prebuild:win": "npm run clean:release",
+    "dev:renderer": "vite",
+    "watch:main": "tsc -w --preserveWatchOutput",
+    "start:electron": "cross-env NODE_ENV=development VITE_DEV_SERVER_URL=http://localhost:5173 wait-on http://localhost:5173 dist/main.js && electron .",
+    "dev": "concurrently \"npm:dev:renderer\" \"npm:watch:main\" \"npm:start:electron\"",
+    "electron": "npm run build && electron .",
+    "build:win": "npm run build && electron-builder -w",
+    "lint": "eslint \"src/**/*.{ts,tsx,js}\"",
+    "lint:fix": "eslint \"src/**/*.{ts,tsx,js}\" --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9",
     "axios": "^0.27.2",
-    "prompt-sync": "^4.2.0"
+    "dotenv": "^17.2.1",
+    "prompt-sync": "^4.2.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "@types/prompt-sync": "^4.2.3",
+    "@typescript-eslint/eslint-plugin": "^8.41.0",
+    "@typescript-eslint/parser": "^8.41.0",
+    "autoprefixer": "^10.4.21",
+    "concurrently": "^9.2.1",
+    "cross-env": "^7.0.3",
+    "electron": "^37.4.0",
+    "electron-builder": "^26.0.12",
+    "eslint": "^9.34.0",
+    "eslint-config-prettier": "^9.1.2",
+    "eslint-plugin-prettier": "^5.5.4",
+    "jscpd": "^4.0.5",
+    "postcss": "^8.5.6",
+    "prettier": "^3.6.2",
+    "tailwindcss": "^3.4.14",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2",
+    "vite": "^5.4.8",
+    "wait-on": "^8.0.4"
   }
 }
