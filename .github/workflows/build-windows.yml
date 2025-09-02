@@ -2,7 +2,7 @@ name: build-electron-windows
 
 on:
   push:
-    branches: [main]
+    branches: [main, fix/fix-workflows]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -49,12 +49,12 @@ jobs:
           DEBUG: electron-builder
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
         run: npm run build:win
+
       - name: Upload artifacts (EXE)
         uses: actions/upload-artifact@v4
         with:
           name: lobby-lockdown-windows
-          path: |
-            release/*.exe
+          path: release/*.exe
           if-no-files-found: error
 
   publish-release:
@@ -78,8 +78,7 @@ jobs:
             ~\AppData\Local\electron\Cache
             ~\AppData\Local\electron-builder\Cache
           key: ${{ runner.os }}-electron-cache-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-electron-cache-
+          restore-keys: ${{ runner.os }}-electron-cache-
 
       - name: Install dependencies (ci)
         if: hashFiles('package-lock.json') != ''
@@ -98,7 +97,6 @@ jobs:
       - name: Upload assets to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            release/*.exe
+          files: release/*.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
