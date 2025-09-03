@@ -93,10 +93,12 @@ jobs:
           DEBUG: electron-builder
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
         run: npm run build:win
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
 
       - name: Upload assets to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: release/*.exe
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
