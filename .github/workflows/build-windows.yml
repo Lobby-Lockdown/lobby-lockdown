@@ -2,7 +2,7 @@ name: build-electron-windows
 
 on:
   push:
-    branches: [main, fix/fix-workflows]
+    branches: [main]
   pull_request:
     branches: [main]
   workflow_dispatch:
