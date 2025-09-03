@@ -57,13 +57,13 @@
       "signExts": []
     },
     "portable": {
-      "artifactName": "${productName}-${version}-portable.exe"
+      "artifactName": "lobby-lockdown-portable.exe"
     },
     "nsis": {
       "oneClick": false,
       "perMachine": false,
       "allowToChangeInstallationDirectory": true,
-      "artifactName": "${productName} Setup ${version}.exe"
+      "artifactName": "lobby-lockdown.exe"
     }
   },
   "scripts": {
