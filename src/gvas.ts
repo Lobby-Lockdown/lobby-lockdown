@@ -17,6 +17,13 @@ class GVAS {
   // Hexadecimal patterns to denote the start and end of the banned players array
   private readonly startPattern: Buffer = Buffer.from([0x00, 0x00, 0x00, 0x12, 0x00, 0x00, 0x00]);
   private readonly endPattern: Buffer = Buffer.from([0x00, 0x05, 0x00, 0x00, 0x00]);
+  
+  // Alternative patterns for different file versions
+  private readonly altStartPatterns: Buffer[] = [
+    Buffer.from([0x12, 0x00, 0x00, 0x00]),
+    Buffer.from([0x00, 0x12, 0x00, 0x00, 0x00]),
+    Buffer.from([0x00, 0x00, 0x12, 0x00, 0x00, 0x00])
+  ];
 
   // Delimiter buffer between each player entry in the array
   private readonly delimiter: Buffer = Buffer.from([0x00, 0x12, 0x00, 0x00, 0x00]);
@@ -32,10 +39,7 @@ class GVAS {
     const fileExists = fs.existsSync(filePath);
 
     if (!fileExists) {
-      throw {
-        code: GVAS.Error.FileNotFound,
-        message: `File doesn't exist: ${filePath}`,
-      } as GVASError;
+      throw new Error(`File doesn't exist: ${filePath}`);
     }
 
     try {
@@ -43,10 +47,7 @@ class GVAS {
       // const fd = fs.openSync(filePath, 'r+');
       // fs.closeSync(fd);
     } catch {
-      throw {
-        code: GVAS.Error.FileNotAccessible,
-        message: `File cannot be read/written: ${filePath}`,
-      } as GVASError;
+      throw new Error(`File cannot be read/written: ${filePath}`);
     }
 
     // Create a backup of the current ban list (optional)
@@ -72,18 +73,81 @@ class GVAS {
   getBanList(): string[] {
     const buffer = fs.readFileSync(this.banListFile);
 
-    // Find the indices of the pattern in the ban list buffer
-    this.endIdx = this.findPattern(buffer, this.endPattern);
-    this.startIdx = this.findPattern(buffer, this.startPattern, this.endIdx - 1);
+    this.startIdx = this.findPattern(buffer, this.startPattern);
+    if (this.startIdx !== -1) {
+      const forwardFrom = this.startIdx + this.startPattern.length;
+      this.endIdx = buffer.indexOf(this.endPattern, forwardFrom);
+    } else {
+      this.endIdx = -1;
+    }
+
+    if (this.startIdx === -1 || this.endIdx === -1 || this.endIdx < this.startIdx) {
+      this.endIdx = this.findPattern(buffer, this.endPattern);
+      if (this.endIdx !== -1) {
+        this.startIdx = this.findPattern(buffer, this.startPattern, this.endIdx - 1);
+        
+        if (this.startIdx === -1) {
+          for (const altPattern of this.altStartPatterns) {
+            this.startIdx = this.findPattern(buffer, altPattern, this.endIdx - 1);
+            if (this.startIdx !== -1) break;
+          }
+        }
+      }
+    }
 
     let extracted: Buffer;
-    if (this.startIdx !== -1 && this.endIdx !== -1) {
+    if (this.startIdx !== -1 && this.endIdx !== -1 && this.endIdx >= this.startIdx) {
       extracted = buffer.slice(this.startIdx + this.startPattern.length, this.endIdx);
     } else {
-      throw {
-        code: GVAS.Error.InvalidFileFormat,
-        message: `An error occurred parsing the GVAS ban list file. Did not find expected pattern.`,
-      } as GVASError;
+      if (buffer.length === 0) {
+        return [];
+      }
+      
+      if (this.endIdx !== -1) {
+        const searchStart = Math.max(0, this.endIdx - 500);
+        const searchEnd = this.endIdx;
+        let foundIds: string[] = [];
+        
+        for (let pos = searchStart; pos < searchEnd - 17; pos++) {
+          const slice = buffer.slice(pos, pos + 17);
+          const str = slice.toString('utf8');
+          if (/^7656\d{13}$/.test(str)) {
+            foundIds.push(str);
+            pos += 16;
+          }
+        }
+        
+        if (foundIds.length > 0) {
+          this.bannedPlayers = foundIds;
+          return foundIds;
+        }
+      }
+      
+      const altStartPattern = Buffer.from('BannedPlayerArray');
+      const altStartIdx = buffer.indexOf(altStartPattern);
+      if (altStartIdx !== -1) {
+        const searchFrom = altStartIdx + altStartPattern.length;
+        let foundIds: string[] = [];
+        let pos = searchFrom;
+        
+        while (pos < buffer.length - 17) {
+          const slice = buffer.slice(pos, pos + 17);
+          const str = slice.toString('utf8');
+          if (/^7656\d{13}$/.test(str)) {
+            foundIds.push(str);
+            pos += 17;
+          } else {
+            pos++;
+          }
+        }
+        
+        this.bannedPlayers = foundIds;
+        return foundIds;
+      }
+      
+      throw new Error(
+        `GVAS parsing failed. File size: ${buffer.length} bytes. Start pattern found at: ${this.startIdx}, End pattern found at: ${this.endIdx}`
+      );
     }
 
     const segments = this.splitBufferOnDelimiter(extracted, this.delimiter);
