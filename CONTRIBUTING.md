@@ -8,7 +8,7 @@ Development setup
 - Install: npm install
 - Dev run: npm run dev (Vite + tsc watch + Electron)
 - Build: npm run build (tsc + vite)
-- Package (Windows portable exe): npm run build-electron
+- Package (Windows portable exe): npm run build:win
 
 Coding guidelines
 

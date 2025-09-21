@@ -15,7 +15,8 @@
     "sourceMap": true,
     "moduleResolution": "node",
     "jsx": "preserve",
-    "allowJs": true
+    "allowJs": true,
+    "types": ["node"]
   },
   "include": ["src/**/*", "types/**/*"],
   "exclude": ["node_modules", "dist"]
