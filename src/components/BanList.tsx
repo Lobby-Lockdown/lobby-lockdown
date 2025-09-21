@@ -56,8 +56,14 @@ const BanList: React.FC<{ steamApiKey: string; onOpenHistory?: () => void }> = (
     try {
       setLoading(true);
       const result = await window.electronAPI.updateBans();
-      toast(result, { kind: 'success' });
-      await loadBans(); // Refresh the list
+      const lower = (result || '').toLowerCase();
+      const kind = lower.startsWith('error:')
+        ? 'error'
+        : lower.includes('up to date')
+        ? 'info'
+        : 'success';
+      toast(result, { kind });
+      await loadBans();
     } catch (error) {
       console.error('Failed to update bans:', error);
       toast('Failed to update bans', { kind: 'error' });
